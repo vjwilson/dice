@@ -1,28 +1,68 @@
+import { useState, useReducer, useEffect } from 'react';
 import Head from 'next/head'
 import Link from 'next/link';
 
-export default function Home() {
+import AttributeCard from "../components/AttributeCard";
+import { calculateCharacterClass } from "../utils/calculateCharacterClass";
+import { updateAttributes } from "../utils/updateAttributes";
+
+const attributesTemplate = [
+  {
+    name: "Strength",
+    value: 0
+  },
+  {
+    name: "Intelligence",
+    value: 0
+  },
+  {
+    name: "Wisdom",
+    value: 0
+  }
+];
+
+export default function CreateCharacter() {
+  const [characterClass, setCharacterClass] = useState("");
+  const [attributes, dispatch] = useReducer(
+    updateAttributes,
+    attributesTemplate
+  );
+
+  function handleRollUpdate(rollName, newTotal) {
+    dispatch({ name: rollName, total: newTotal });
+  }
+
+  useEffect(() => {
+    const best = calculateCharacterClass(attributes);
+    setCharacterClass(best);
+  }, [attributes]);
+
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>Create a Character</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
         <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+         Create a Character
         </h1>
 
         <p className="description">
-          Get started by editing <code>pages/index.js</code>
+          Roll the dice to see your attributes
         </p>
 
-        <p className="description">
-          <Link href="/create-character">
-            <a>Create a character</a>
-          </Link>
-        </p>
+        <section style={{ display: "flex-column", marginBottom: ".5rem" }}>
+          {<p>Best character class: {characterClass}</p>}
+          {attributes.map(attr => (
+            <AttributeCard
+              key={attr.name}
+              name={attr.name}
+              onUpdate={handleRollUpdate}
+            />
+          ))}
+        </section>
 
         <div className="grid">
           <a href="https://nextjs.org/docs" className="card">
