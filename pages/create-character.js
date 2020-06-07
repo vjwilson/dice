@@ -18,6 +18,18 @@ const attributesTemplate = [
   {
     name: "Wisdom",
     value: 0
+  },
+  {
+    name: "Dexterity",
+    value: 0
+  },
+  {
+    name: "Constituion",
+    value: 0
+  },
+  {
+    name: "Charisma",
+    value: 0
   }
 ];
 
@@ -53,15 +65,17 @@ export default function CreateCharacter() {
           Roll the dice to see your attributes
         </p>
 
-        <section style={{ display: "flex-column", marginBottom: ".5rem" }}>
-          {<p>Best character class: {characterClass}</p>}
-          {attributes.map(attr => (
-            <AttributeCard
-              key={attr.name}
-              name={attr.name}
-              onUpdate={handleRollUpdate}
-            />
-          ))}
+        <section style={{ display: "flex", flexDirection: "column", alignItems: 'center', flexWrap: 'wrap', marginBottom: ".5rem" }}>
+          {<p style={{ marginBottom: "1rem" }}>Best character class: {characterClass}</p>}
+          <div style={{ display: "flex", justifyContent: 'space-around', flexWrap: 'wrap' }}>
+            {attributes.map(attr => (
+              <AttributeCard
+                key={attr.name}
+                name={attr.name}
+                onUpdate={handleRollUpdate}
+              />
+            ))}
+          </div>
         </section>
 
         <div className="grid">
