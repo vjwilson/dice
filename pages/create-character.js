@@ -5,6 +5,8 @@ import Link from 'next/link';
 import AttributeCard from "../components/AttributeCard";
 import { calculateCharacterClass } from "../utils/calculateCharacterClass";
 import { updateAttributes } from "../utils/updateAttributes";
+import { getRandomValue } from "../utils/getRandomValue";
+import { getDiceTotal } from "../utils/getDiceTotal";
 
 const attributesTemplate = [
   {
@@ -33,8 +35,11 @@ const attributesTemplate = [
   }
 ];
 
+const startingRolls = Array.from([1, 2, 3, 4, 5, 6], ()=> [0, 0, 0, 0]);
+
 export default function CreateCharacter() {
   const [characterClass, setCharacterClass] = useState("");
+  const [seedRolls, setSeedRolls] = useState(startingRolls);
   const [attributes, dispatch] = useReducer(
     updateAttributes,
     attributesTemplate
@@ -42,6 +47,21 @@ export default function CreateCharacter() {
 
   function handleRollUpdate(rollName, newTotal) {
     dispatch({ name: rollName, total: newTotal });
+  }
+
+  function rollDice() {
+    const allRolls = [];
+    attributesTemplate.forEach((attr) => {
+      const newRolls = [];
+      for (let i = 0; i < 4; i++) {
+        newRolls.push(getRandomValue(6));
+      }
+      allRolls.push(newRolls);
+      const newTotal = getDiceTotal(newRolls);
+
+      dispatch({ name: attr.name, total: newTotal });
+    })
+    setSeedRolls(allRolls);
   }
 
   useEffect(() => {
@@ -65,48 +85,24 @@ export default function CreateCharacter() {
           Roll the dice to see your attributes
         </p>
 
+        <button type="button" onClick={rollDice}>
+          Roll all
+        </button>
+
         <section style={{ display: "flex", flexDirection: "column", alignItems: 'center', flexWrap: 'wrap', marginBottom: ".5rem" }}>
           {<p style={{ marginBottom: "1rem" }}>Best character class: {characterClass}</p>}
           <div style={{ display: "flex", justifyContent: 'space-around', flexWrap: 'wrap' }}>
-            {attributes.map(attr => (
+            {attributes.map((attr, i) => (
               <AttributeCard
                 key={attr.name}
                 name={attr.name}
+                newRolls={seedRolls[i]}
                 onUpdate={handleRollUpdate}
               />
             ))}
           </div>
         </section>
 
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
       </main>
 
       <footer>

@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Die from "./Die";
 import { getRandomValue } from "../utils/getRandomValue";
+import { getDiceTotal } from "../utils/getDiceTotal";
 
-export default function AttributeCard({ name, onUpdate }) {
-    const [rolls, setRolls] = useState([0, 0, 0, 0]);
-    const [total, setTotal] = useState(0);
+export default function AttributeCard({ name, newRolls = [0, 0, 0, 0], onUpdate }) {
+    const [rolls, setRolls] = useState(newRolls);
+    const startingTotal = newRolls.reduce((a, b) => a + b);
+    const [total, setTotal] = useState(startingTotal);
+
+    useEffect(() => {
+        setRolls(newRolls);
+
+        const newTotal = getDiceTotal(newRolls);
+        setTotal(newTotal);
+    }, newRolls);
 
     function handleRolls() {
         const newRolls = [];
@@ -12,11 +21,7 @@ export default function AttributeCard({ name, onUpdate }) {
             newRolls.push(getRandomValue(6));
         }
         setRolls(newRolls.sort().reverse());
-        const newTotal = newRolls
-            .slice()
-            .sort()
-            .slice(1)
-            .reduce((a, b) => a + b, 0);
+        const newTotal = getDiceTotal(newRolls);
         setTotal(newTotal);
         onUpdate(name, newTotal);
     }
