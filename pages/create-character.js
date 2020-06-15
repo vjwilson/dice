@@ -38,7 +38,8 @@ const attributesTemplate = [
 const startingRolls = Array.from([1, 2, 3, 4, 5, 6], ()=> [0, 0, 0, 0]);
 
 export default function CreateCharacter() {
-  const [characterClass, setCharacterClass] = useState("");
+  const [characterClasses, setCharacterClasses] = useState(['None']);
+  console.log('characterClasses', characterClasses)
   const [seedRolls, setSeedRolls] = useState(startingRolls);
   const [attributes, dispatch] = useReducer(
     updateAttributes,
@@ -65,8 +66,8 @@ export default function CreateCharacter() {
   }
 
   useEffect(() => {
-    const best = calculateCharacterClass(attributes);
-    setCharacterClass(best);
+    const clasess = calculateCharacterClass(attributes);
+    setCharacterClasses(clasess);
   }, [attributes]);
 
   return (
@@ -81,16 +82,16 @@ export default function CreateCharacter() {
          Create a Character
         </h1>
 
-        <p className="description">
+        <p className="description" style={{ marginBottom: '.5rem' }}>
           Roll the dice to see your attributes
         </p>
 
-        <button type="button" onClick={rollDice}>
+        <button type="button" style={{ backgroundColor: '#0066FF', color: '#FFF', fontSize: '1.25rem', fontWeight: 'bold', padding: '.5em .75em' }}onClick={rollDice}>
           Roll all
         </button>
 
         <section style={{ display: "flex", flexDirection: "column", alignItems: 'center', flexWrap: 'wrap', marginBottom: ".5rem" }}>
-          {<p style={{ marginBottom: "1rem" }}>Best character class: {characterClass}</p>}
+          {<p style={{ margin: "1.5rem 0" }}>Recommended character classes: <span style={{ fontWeight: 'bold' }}>{characterClasses}</span></p>}
           <div style={{ display: "flex", justifyContent: 'space-around', flexWrap: 'wrap' }}>
             {attributes.map((attr, i) => (
               <AttributeCard
@@ -127,7 +128,7 @@ export default function CreateCharacter() {
         }
 
         main {
-          padding: 5rem 0;
+          padding: 1rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;

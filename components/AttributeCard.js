@@ -31,6 +31,7 @@ export default function AttributeCard({ name, newRolls = [0, 0, 0, 0], onUpdate 
             style={{
                 border: "1px solid",
                 display: "flex-column",
+                marginBottom: "1rem",
                 padding: ".5rem"
             }}
         >
