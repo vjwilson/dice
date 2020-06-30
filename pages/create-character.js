@@ -57,7 +57,7 @@ export default function CreateCharacter() {
       for (let i = 0; i < 4; i++) {
         newRolls.push(getRandomValue(6));
       }
-      allRolls.push(newRolls);
+      allRolls.push(newRolls.sort().reverse());
       const newTotal = getDiceTotal(newRolls);
 
       dispatch({ name: attr.name, total: newTotal });
